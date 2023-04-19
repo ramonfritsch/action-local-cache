@@ -1309,20 +1309,18 @@ async function main() {
         const { cacheDir, paths } = (0, getVars_1.getVars)();
         const cacheHits = [];
         const cacheMisses = [];
-        if (await (0, io_util_1.exists)(cacheDir)) {
-            await Promise.all(paths.map(async ({ path, cache, target }) => {
-                if (await (0, io_util_1.exists)(cache)) {
-                    await (0, io_1.mkdirP)(path_1.default.dirname(target));
-                    // Copy files from cache, leave them in cache dir in case
-                    // the action doesn't finish properly (and post.ts doesn't run)
-                    await (0, io_1.cp)(cache, target, { force: true });
-                    cacheHits.push(path);
-                }
-                else {
-                    cacheMisses.push(path);
-                }
-            }));
-        }
+        await Promise.all(paths.map(async ({ path, cache, target }) => {
+            if (await (0, io_util_1.exists)(cache)) {
+                await (0, io_1.mkdirP)(path_1.default.dirname(target));
+                // Copy files from cache, leave them in cache dir in case
+                // the action doesn't finish properly (and post.ts doesn't run)
+                await (0, io_1.cp)(cache, target, { recursive: true, force: true });
+                cacheHits.push(path);
+            }
+            else {
+                cacheMisses.push(path);
+            }
+        }));
         if (cacheHits.length) {
             log_1.default.info(`Cache found and restored to ${cacheHits.join(', ')}`);
         }

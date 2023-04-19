@@ -13,20 +13,18 @@ async function main(): Promise<void> {
 	const cacheHits: string[] = []
 	const cacheMisses: string[] = []
 
-    if (await exists(cacheDir)) {
-		await Promise.all(paths.map(async ({ path, cache, target }) => {
-			if (await exists(cache)) {
-				await mkdirP(fsPath.dirname(target))
-				// Copy files from cache, leave them in cache dir in case
-				// the action doesn't finish properly (and post.ts doesn't run)
-				await cp(cache, target, { force: true })
+	await Promise.all(paths.map(async ({ path, cache, target }) => {
+		if (await exists(cache)) {
+			await mkdirP(fsPath.dirname(target))
+			// Copy files from cache, leave them in cache dir in case
+			// the action doesn't finish properly (and post.ts doesn't run)
+			await cp(cache, target, { recursive: true, force: true })
 
-				cacheHits.push(path)
-			} else {
-				cacheMisses.push(path)
-			}
-		}))
-	}
+			cacheHits.push(path)
+		} else {
+			cacheMisses.push(path)
+		}
+	}))
 
 	if (cacheHits.length) {
 		log.info(`Cache found and restored to ${cacheHits.join(', ')}`)
