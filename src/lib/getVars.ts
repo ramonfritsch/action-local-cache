@@ -8,13 +8,10 @@ const CWD = process.cwd()
 type Vars = {
   cacheDir: string
   paths: Array<{
+	path: string,
 	cache: string,
 	target: string,
   }>
-  options: {
-    key: string
-    paths: string[]
-  }
 }
 
 function getInputAsArray(
@@ -50,9 +47,9 @@ export const getVars = (): Vars => {
   return {
     cacheDir,
 	paths: options.paths.map(p => ({
+		path: p,
 		cache: path.join(cacheDir, p),
 		target: path.resolve(CWD, p),
 	})),
-    options,
   }
 }

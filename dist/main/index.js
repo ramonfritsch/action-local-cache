@@ -1232,10 +1232,10 @@ const getVars = () => {
     return {
         cacheDir,
         paths: options.paths.map(p => ({
+            path: p,
             cache: path_1.default.join(cacheDir, p),
             target: path_1.default.resolve(CWD, p),
         })),
-        options,
     };
 };
 exports.getVars = getVars;
@@ -1306,21 +1306,30 @@ const isErrorLike_1 = __nccwpck_require__(427);
 const log_1 = __importDefault(__nccwpck_require__(661));
 async function main() {
     try {
-        const { cacheDir, paths, options } = (0, getVars_1.getVars)();
+        const { cacheDir, paths } = (0, getVars_1.getVars)();
+        const cacheHits = [];
+        const cacheMisses = [];
         if (await (0, io_util_1.exists)(cacheDir)) {
-            await Promise.all(paths.map(async ({ cache, target }) => {
-                await (0, io_1.mkdirP)(path_1.default.dirname(target));
-                // Copy files from cache, leave them in cache dir in case
-                // the action doesn't finish properly (and post.ts doesn't run)
-                await (0, io_1.cp)(cache, target, { force: true });
+            await Promise.all(paths.map(async ({ path, cache, target }) => {
+                if (await (0, io_util_1.exists)(cache)) {
+                    await (0, io_1.mkdirP)(path_1.default.dirname(target));
+                    // Copy files from cache, leave them in cache dir in case
+                    // the action doesn't finish properly (and post.ts doesn't run)
+                    await (0, io_1.cp)(cache, target, { force: true });
+                    cacheHits.push(path);
+                }
+                else {
+                    cacheMisses.push(path);
+                }
             }));
-            log_1.default.info(`Cache found and restored to ${options.paths.join(', ')}`);
-            (0, core_1.setOutput)('cache-hit', true);
         }
-        else {
-            log_1.default.info(`Skipping: cache not found for ${options.paths.join(', ')}.`);
-            (0, core_1.setOutput)('cache-hit', false);
+        if (cacheHits.length) {
+            log_1.default.info(`Cache found and restored to ${cacheHits.join(', ')}`);
         }
+        if (cacheMisses.length) {
+            log_1.default.info(`Skipping: cache not found for ${cacheMisses.join(', ')}.`);
+        }
+        (0, core_1.setOutput)('cache-hit', cacheHits.length > 0 && cacheMisses.length === 0);
     }
     catch (error) {
         console.trace(error);

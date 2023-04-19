@@ -1232,10 +1232,10 @@ const getVars = () => {
     return {
         cacheDir,
         paths: options.paths.map(p => ({
+            path: p,
             cache: path_1.default.join(cacheDir, p),
             target: path_1.default.resolve(CWD, p),
         })),
-        options,
     };
 };
 exports.getVars = getVars;
