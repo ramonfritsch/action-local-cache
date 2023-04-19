@@ -1,6 +1,6 @@
 {
   "name": "action-local-cache",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "private": true,
   "description": "A Github Action to save and restore files across job runs directly in the runner's file system",
   "main": "dist/main/index.ts",
@@ -8,9 +8,8 @@
     "node": "^16.13.0"
   },
   "scripts": {
-    "all": "npm run format && npm run lint && npm run type-check && npm run pack && npm test",
-    "pack": "ncc build src/main.ts --out dist/main && ncc build src/post.ts --out dist/post",
-    "type-check": "tsc --noEmit"
+    "type": "tsc --noEmit",
+    "build": "ncc build src/main.ts --out dist/main && ncc build src/post.ts --out dist/post"
   },
   "keywords": [
     "actions",
@@ -26,6 +25,7 @@
     "loglevel": "^1.7.0"
   },
   "devDependencies": {
+    "@total-typescript/ts-reset": "^0.4.2",
     "@types/jest": "^27.0.3",
     "@types/node": "^16.11.11",
     "@typescript-eslint/eslint-plugin": "^5.5.0",

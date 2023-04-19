@@ -9,7 +9,7 @@ import log from './lib/log'
 
 async function main(): Promise<void> {
   try {
-    const { cacheDir, targetPath, options } = getVars()
+    const { cacheDir, paths, options } = getVars()
 
     if (await exists(cacheDir)) {
 		await Promise.all(paths.map(async ({ cache, target }) => {
