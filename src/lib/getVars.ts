@@ -12,8 +12,17 @@ type Vars = {
     key: string
     path: string
   }
-  targetDir: string
   targetPath: string
+}
+
+function getInputAsArray(
+    name: string
+): string[] {
+    return core
+        .getInput(name)
+        .split("\n")
+        // .map(s => s.replace(/^!\s+/, "!").trim())
+        .filter(x => x !== "");
 }
 
 export const getVars = (): Vars => {
@@ -25,25 +34,23 @@ export const getVars = (): Vars => {
     throw new TypeError('Expected GITHUB_REPOSITORY environment variable to be defined.')
   }
 
-  const options = {
-    key: core.getInput('key') || 'no-key',
-    path: core.getInput('path'),
-  }
-
-  if (!options.path) {
+  if (!core.getInput('path')) {
     throw new TypeError('path is required but was not provided.')
   }
 
+  const options = {
+    key: core.getInput('key') || 'no-key',
+    paths: getInputAsArray('path'),
+  }
+
   const cacheDir = path.join(RUNNER_TOOL_CACHE, GITHUB_REPOSITORY, options.key)
-  const cachePath = path.join(cacheDir, options.path)
-  const targetPath = path.resolve(CWD, options.path)
-  const { dir: targetDir } = path.parse(targetPath)
 
   return {
     cacheDir,
-    cachePath,
+	paths: options.paths.map(p => ({
+		cache: path.join(cacheDir, p),
+		target: path.resolve(CWD, p),
+	}),
     options,
-    targetDir,
-    targetPath,
   }
 }
