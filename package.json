@@ -1,44 +1,45 @@
 {
-  "name": "action-local-cache",
-  "version": "1.0.4",
-  "private": true,
-  "description": "A Github Action to save and restore files across job runs directly in the runner's file system",
-  "main": "dist/main/index.ts",
-  "engines": {
-    "node": "^16.13.0"
-  },
-  "scripts": {
-    "type": "tsc --noEmit",
-    "build": "bun build src/main.ts --outdir dist/main --target node --entry-naming \"[dir]/index.[ext]\" && bun build src/post.ts --outdir dist/post --target node --entry-naming \"[dir]/index.[ext]\""
-  },
-  "keywords": [
-    "actions",
-    "node",
-    "self-hosted",
-    "runner"
-  ],
-  "author": "Masterworks",
-  "license": "MIT",
-  "dependencies": {
-    "@actions/core": "^1.2.6",
-    "@actions/io": "^1.0.2",
-    "loglevel": "^1.7.0"
-  },
-  "devDependencies": {
-    "@total-typescript/ts-reset": "^0.4.2",
-    "@types/jest": "^27.0.3",
-    "@types/node": "^16.11.11",
-    "@typescript-eslint/eslint-plugin": "^5.5.0",
-    "@typescript-eslint/parser": "^5.5.0",
-    "eslint": "^8.3.0",
-    "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-jest": "^25.3.0",
-    "eslint-plugin-node": "^11.1.0",
-    "jest": "^27.4.3",
-    "jest-circus": "^27.4.2",
-    "js-yaml": "^4.0.0",
-    "prettier": "^2.2.1",
-    "ts-jest": "^27.0.7",
-    "typescript": "latest"
-  }
+	"name": "action-local-cache",
+	"version": "1.0.4",
+	"private": true,
+	"description": "A Github Action to save and restore files across job runs directly in the runner's file system",
+	"main": "dist/main/index.ts",
+	"engines": {
+		"node": "^16.13.0"
+	},
+	"scripts": {
+		"type": "tsc --noEmit",
+		"build": "ncc build src/main.ts --out dist/main && ncc build src/post.ts --out dist/post"
+	},
+	"keywords": [
+		"actions",
+		"node",
+		"self-hosted",
+		"runner"
+	],
+	"author": "Masterworks",
+	"license": "MIT",
+	"dependencies": {
+		"@actions/core": "^1.2.6",
+		"@actions/io": "^1.0.2",
+		"loglevel": "^1.7.0"
+	},
+	"devDependencies": {
+		"@total-typescript/ts-reset": "^0.4.2",
+		"@types/jest": "^27.0.3",
+		"@types/node": "^16.11.11",
+		"@typescript-eslint/eslint-plugin": "^5.5.0",
+		"@typescript-eslint/parser": "^5.5.0",
+		"@vercel/ncc": "^0.38.0",
+		"eslint": "^8.3.0",
+		"eslint-plugin-import": "^2.25.3",
+		"eslint-plugin-jest": "^25.3.0",
+		"eslint-plugin-node": "^11.1.0",
+		"jest": "^27.4.3",
+		"jest-circus": "^27.4.2",
+		"js-yaml": "^4.0.0",
+		"prettier": "^2.2.1",
+		"ts-jest": "^27.0.7",
+		"typescript": "latest"
+	}
 }
