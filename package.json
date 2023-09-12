@@ -9,7 +9,7 @@
   },
   "scripts": {
     "type": "tsc --noEmit",
-    "build": "ncc build src/main.ts --out dist/main && ncc build src/post.ts --out dist/post"
+    "build": "bun build src/main.ts --outdir dist/main --target node --entry-naming \"[dir]/index.[ext]\" && bun build src/post.ts --outdir dist/post --target node --entry-naming \"[dir]/index.[ext]\""
   },
   "keywords": [
     "actions",
@@ -30,7 +30,6 @@
     "@types/node": "^16.11.11",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
-    "@vercel/ncc": "^0.33.0",
     "eslint": "^8.3.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jest": "^25.3.0",
@@ -40,6 +39,6 @@
     "js-yaml": "^4.0.0",
     "prettier": "^2.2.1",
     "ts-jest": "^27.0.7",
-    "typescript": "^4.5.2"
+    "typescript": "latest"
   }
 }
