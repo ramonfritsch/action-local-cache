@@ -1,6 +1,6 @@
 import { setFailed, setOutput } from '@actions/core';
 import { cp, mkdirP } from '@actions/io';
-import { exists } from '@actions/io/lib/io-util';
+import { exists, isDirectory } from '@actions/io/lib/io-util';
 import fsPath from 'path';
 import util from 'util';
 import { getVars } from './lib/getVars';
@@ -23,13 +23,19 @@ const exec = util.promisify(require('child_process').exec);
 
 					// Copy files from cache, leave them in cache dir in case
 					// the action doesn't finish properly (and post.ts doesn't run)
-					if (process.platform === 'win32') {
-						await cp(cache, target, { recursive: true, force: true });
-					} else {
-						const cacheWithTrailingSlash = cache.endsWith('/') ? cache : cache + '/';
+					if (process.platform === 'linux' || process.platform === 'darwin') {
+						const isDir = await isDirectory(cache);
+						const cacheWithTrailingSlash =
+							isDir && !cache.endsWith('/') ? cache + '/' : cache;
 
 						// This is faster, only for linux/mac
-						await exec('cp -a ' + cacheWithTrailingSlash + '. ' + target);
+						await exec(
+							`cp ${isDir ? '-a' : ''} ${cacheWithTrailingSlash}${
+								isDir ? '.' : ''
+							} ${target}`,
+						);
+					} else {
+						await cp(cache, target, { recursive: true, force: true });
 					}
 
 					cacheHits.push(path);
