@@ -15,7 +15,13 @@ import log from './lib/log';
 		await Promise.all(
 			paths.map(async ({ cache, target }) => {
 				await rmRF(cache);
-				await mv(target, cache, { force: true });
+
+				try {
+					await mv(target, cache, { force: true });
+				} catch (error) {
+					log.trace(error);
+					// No need to fail here, the target path might not exist
+				}
 			}),
 		);
 	} catch (error: unknown) {
